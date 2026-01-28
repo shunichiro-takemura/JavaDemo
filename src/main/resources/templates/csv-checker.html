@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSVチェッカー</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        .file-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .file-select-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #6c757d;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .file-select-btn:hover {
+            background-color: #5a6268;
+        }
+        .file-name-display {
+            font-size: 14px;
+            color: #666;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            flex-grow: 1;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+        }
+        .check-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .check-btn:hover {
+            background-color: #0069d9;
+        }
+        .check-btn:disabled {
+            background-color: #aaa;
+            cursor: not-allowed;
+        }
+        .error-section {
+            margin-top: 30px;
+        }
+        .error-section h2 {
+            color: #dc3545;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .error-list {
+            list-style: none;
+            padding: 0;
+        }
+        .error-list li {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+        }
+        input[type="file"] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CSVチェッカー</h1>
+
+        <!-- 成功メッセージ（画面上部） -->
+        <div th:if="${checked != null and checked and result != null and result.valid}" class="success-message">
+            <p>このCSVは問題ありません。</p>
+            <p th:text="${result.successMessage}"></p>
+        </div>
+
+        <!-- ファイルアップロードフォーム -->
+        <form th:action="@{/csv-checker/check}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label>CSVファイル選択</label>
+                <div class="file-input-wrapper">
+                    <button type="button" class="file-select-btn" onclick="document.getElementById('csvFile').click();">
+                        CSV選択
+                    </button>
+                    <div class="file-name-display" id="fileNameDisplay"
+                         th:text="${fileName != null ? fileName : 'ファイルが選択されていません'}">
+                        ファイルが選択されていません
+                    </div>
+                </div>
+                <input type="file" id="csvFile" name="csvFile" accept=".csv">
+            </div>
+
+            <button type="submit" class="check-btn" id="checkBtn">チェック</button>
+        </form>
+
+        <!-- エラーメッセージ（画面下部） -->
+        <div th:if="${checked != null and checked and result != null and !result.valid}" class="error-section">
+            <h2>チェック結果</h2>
+            <ul class="error-list">
+                <li th:each="error : ${result.errorMessages}" th:text="${error}"></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('csvFile').addEventListener('change', function() {
+            var fileName = this.files.length > 0 ? this.files[0].name : 'ファイルが選択されていません';
+            document.getElementById('fileNameDisplay').textContent = fileName;
+        });
+    </script>
+</body>
+</html>
