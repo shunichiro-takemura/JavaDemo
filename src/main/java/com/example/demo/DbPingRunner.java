@@ -15,7 +15,7 @@ public class DbPingRunner implements CommandLineRunner {
 
   @Override
   public void run(String... args) {
-    Integer one = jdbcTemplate.queryForObject("select 1", Integer.class);
+    var one = jdbcTemplate.queryForObject("select 1", Integer.class);
     System.out.println("[DB PING] select 1 => " + one);
   }
 }
