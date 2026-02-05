@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSV Checker</title>
+    <title>勤怠CSVチェッカー</title>
     <style>
         * {
             box-sizing: border-box;
@@ -158,20 +158,20 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>CSV Checker</h1>
+            <h1>勤怠CSVチェッカー</h1>
             <div class="user-info">
                 <span sec:authentication="name">User</span>
                 <form th:action="@{/logout}" method="post" style="display: inline;">
-                    <button type="submit" class="logout-btn">Logout</button>
+                    <button type="submit" class="logout-btn">ログアウト</button>
                 </form>
             </div>
         </div>
 
         <div class="card">
             <form class="upload-form" th:action="@{/csv-checker}" method="post" enctype="multipart/form-data">
-                <h2>Upload CSV File</h2>
+                <h2>勤怠CSVファイルをアップロード</h2>
                 <input type="file" name="file" accept=".csv" required>
-                <button type="submit" class="submit-btn">Check CSV</button>
+                <button type="submit" class="submit-btn">チェック実行</button>
             </form>
         </div>
 
@@ -179,17 +179,17 @@
 
         <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
 
-        <div th:if="${errors}" class="alert alert-warning">
-            <strong>Validation Errors Found:</strong>
+        <div th:if="${validationMessages}" class="alert alert-warning">
+            <strong>確認が必要な項目:</strong>
             <ul class="error-list">
-                <li th:each="err : ${errors}" th:text="${err}"></li>
+                <li th:each="msg : ${validationMessages}" th:text="${msg}"></li>
             </ul>
         </div>
 
         <div th:if="${rows}" class="card">
             <div class="result-info">
-                <strong>File:</strong> <span th:text="${fileName}"></span><br>
-                <strong>Total Lines:</strong> <span th:text="${totalLines}"></span>
+                <strong>ファイル名:</strong> <span th:text="${fileName}"></span><br>
+                <strong>総行数:</strong> <span th:text="${totalLines}"></span>
             </div>
 
             <div class="table-wrapper">
